@@ -1,40 +1,105 @@
 autoUpdate:
   enabled: true
-  schedule: '0 0 * * *'
+  schedule: 0 0 * * *
+bootConfigURL: https://github.com/cloudbees/arcalos-boot-config.git
 cluster:
-  clusterName: ""
-  environmentGitOwner: ""
-  project: ""
+  azure: {}
+  chartRepository: http://bucketrepo/bucketrepo/charts/
+  clusterName: cowlholy
+  environmentGitOwner: macox-org
+  environmentGitPublic: true
+  externalDNSSAName: cowlholy-dn
+  gitKind: github
+  gitName: github
+  gitPublic: true
+  gitServer: https://github.com
+  gke:
+    projectNumber: "466657306144"
+  kanikoSAName: cowlholy-ko
+  namespace: jx
+  project: cbjx-cowlholy
   provider: gke
-  zone: ""
-gitops: true
-githubApp:
-  enabled: false
-  url: ""
-  schedule: '0 0 * * *'
+  registry: gcr.io
+  vaultName: cowlholy
+  vaultSAName: cowlholy-vt
+  zone: us-central1-c
 environments:
-- key: dev
-- key: staging
-- key: production
+- ingress:
+    cloud_dns_secret_name: external-dns-gcp-sa
+    domain: cbjx-cowlholy.play-jxaas.live
+    domainIssuerURL: https://jx-tenant-service-jx.mgmt.play-jxaas.live
+    externalDNS: true
+    namespaceSubDomain: -jx.
+    tls:
+      email: jenkins-x@cloudbees.com
+      enabled: true
+      production: false
+  key: dev
+  repository: environment-cowlholy-dev
+- ingress:
+    domain: ""
+    externalDNS: false
+    namespaceSubDomain: ""
+    tls:
+      email: ""
+      enabled: false
+      production: false
+  key: staging
+  repository: environment-cowlholy-staging
+- ingress:
+    domain: ""
+    externalDNS: false
+    namespaceSubDomain: ""
+    tls:
+      email: ""
+      enabled: false
+      production: false
+  key: production
+  repository: environment-cowlholy-production
+githubApp:
+  enabled: true
+  schedule: 0 0 * * *
+  url: https://lighthouse-githubapp-jx.mgmt.play-jxaas.live
+gitops: true
 ingress:
-  domain: ""
+  cloud_dns_secret_name: external-dns-gcp-sa
+  domain: cbjx-cowlholy.play-jxaas.live
+  domainIssuerURL: https://jx-tenant-service-jx.mgmt.play-jxaas.live
   externalDNS: true
+  namespaceSubDomain: -jx.
   tls:
     email: jenkins-x@cloudbees.com
     enabled: true
     production: false
 kaniko: true
+repository: bucketrepo
 secretStorage: vault
 storage:
+  backup:
+    enabled: true
+    url: gs://cbjx-cowlholy-backup
   logs:
-    enabled: false
-    url: ""
+    enabled: true
+    url: gs://cbjx-cowlholy-lts
   reports:
     enabled: false
     url: ""
   repository:
-    enabled: false
-    url: ""
+    enabled: true
+    url: gs://cbjx-cowlholy-repository
+vault:
+  aws: {}
+  bucket: cbjx-cowlholy-vault
+  key: cowlholy-23bb126edb75-crypto-key
+  keyring: cowlholy-23bb126edb75-keyring
+  name: cowlholy
+  serviceAccount: cowlholy-vt
 velero:
   namespace: velero
-webhook: prow
+  schedule: ""
+  serviceAccount: cowlholy-vo
+  ttl: ""
+versionStream:
+  ref: v0.0.443
+  url: https://github.com/cloudbees/arcalos-jenkins-x-versions.git
+webhook: lighthouse
